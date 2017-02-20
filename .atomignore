@@ -1,0 +1,8 @@
+.atomignore
+LICENSE
+README.md
+coffee-compile.cson
+web/index.js
+web/io.js
+index.html
+style.min.css

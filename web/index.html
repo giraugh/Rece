@@ -1,0 +1,46 @@
+
+<html>
+  <head>
+    <title>Rece Editor</title>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="style.min.css"/>
+    <script src="io.js"></script>
+    <script src="index.js"></script>
+  </head>
+  <body>
+    <div id="wrapper">
+      <nav id="topbar">
+        <div class="baritem title">Rece Editor</div>
+        <div id="LoadProject" class="baritem clickable">Load Project</div>
+        <div id="OpenLevel" class="baritem clickable">  Open Level</div>
+        <div id="Quit" class="baritem clickable right"> Quit</div>
+      </nav>
+      <div id="main">
+        <nav id="sidebar">
+          <div class="tools">
+            <div id="Place" class="tool material-icons active">add</div>
+            <div id="Remove" class="tool material-icons">remove</div>
+            <div id="Marquee" class="tool material-icons">crop_square</div>
+            <div id="Picker" class="tool material-icons">colorize</div>
+          </div>
+          <div class="layers">
+            <div id="TemplateLayer" class="layer template">Template
+              <div class="remove material-icons">delete</div>
+            </div>
+            <div id="MainLayer" class="layer active">Main</div>
+            <div class="layer add material-icons">add_box</div>
+          </div>
+          <div class="switcher">
+            <div id="Tiles" class="switcheritem material-icons active">crop_square</div>
+            <div id="Instances" class="switcheritem material-icons">cloud</div>
+          </div>
+          <div class="tiles active"></div>
+          <div class="instances"></div>
+        </nav>
+        <canvas id="grid"></canvas>
+        <canvas id="selection"></canvas>
+        <canvas id="editor"></canvas>
+      </div>
+    </div>
+  </body>
+</html>

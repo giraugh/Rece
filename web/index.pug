@@ -1,0 +1,37 @@
+//output:index.html
+
+html
+  head
+    title Rece Editor
+    meta(charset="utf-8")
+    link(rel="stylesheet", type="text/css", href="style.min.css")
+    script(src="io.js")
+    script(src="index.js")
+
+  body
+    #wrapper
+      nav#topbar
+        .baritem.title Rece Editor
+        .baritem.clickable#LoadProject Load Project
+        .baritem.clickable#OpenLevel   Open Level
+        .baritem.clickable.right#Quit  Quit
+      #main
+        nav#sidebar
+          .tools
+            .tool.material-icons.active#Place add
+            .tool.material-icons#Remove remove
+            .tool.material-icons#Marquee crop_square
+            .tool.material-icons#Picker colorize
+          .layers
+            .layer.template#TemplateLayer Template
+              .remove.material-icons delete
+            .layer.active#MainLayer Main
+            .layer.add.material-icons add_box
+          .switcher
+            .switcheritem.material-icons.active#Tiles crop_square
+            .switcheritem.material-icons#Instances cloud
+          .tiles.active
+          .instances
+        canvas#grid
+        canvas#selection
+        canvas#editor

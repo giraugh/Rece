@@ -1,0 +1,267 @@
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons")
+@import url("https://fonts.googleapis.com/css?family=Muli")
+@import "../node_modules/vex-js/dist/css/vex.css"
+@import "../node_modules/vex-js/dist/css/vex-theme-le.css"
+
+$gui-col-light: #3963a8
+$gui-col-mid: #445c82
+$gui-col-dark: #294572
+$gui-col-shadow: #293956
+$gui-col-highlight: #598ada
+$gui-col-pressed: #4770b3
+
+$gui-sidebar-size: 160px
+$gui-layer-height: 35px
+$gui-switcher-height: 25px
+
+*
+  margin: 0px
+  padding: 0px
+  font-family: 'Muli', Georgia
+  user-select: none
+  -webkit-user-select: none
+  -webkit-user-drag: none
+
+::-webkit-scrollbar
+  width: 2px
+
+::-webkit-scrollbar-thumb
+  background: $gui-col-light
+  border-radius: 50px
+
+
+nav#topbar
+  background-color: $gui-col-light
+  width: 100%
+  height: 5vh
+  overflow-x: auto
+  -webkit-app-region: drag
+
+  .baritem
+    -webkit-app-region: no-drag
+    display: inline-block
+    height: 3vh
+    margin: .5vh
+    margin-right: 0px
+    padding: .5vh
+    padding-left: 1vh
+    padding-right: 1vh
+    position: relative
+    vertical-align: middle
+    line-height: 3vh
+    background-color: $gui-col-highlight
+    color: white
+    border-radius: 7px
+    box-shadow: 0px 0px 2px 1px lighten($gui-col-shadow, 7)
+    cursor: default
+
+    &.title
+      font-style: italic
+
+    &.right
+      float: right
+      margin-right: 1.5vh
+
+    &.clickable
+      box-shadow: 0px 0px 3px 1px lighten($gui-col-shadow, 10)
+      cursor: pointer
+
+      &:hover
+        box-shadow: 0px 0px 6px 1px lighten($gui-col-shadow, 7)
+        position: relative
+        top: -1px
+
+#main
+  width: 100%
+  height: 95vh
+  float: left
+
+nav#sidebar
+  width: $gui-sidebar-size
+  height: 100%
+  float: left
+  background-color: $gui-col-dark
+  box-shadow: inset 0px 6px 14px 0px $gui-col-shadow
+  overflow-y: hidden
+
+  .tools
+    padding: 5px
+    text-align: center
+
+    .tool
+      cursor: pointer
+      display: inline-block
+      width: 50px
+      height: 50px
+      background-color: $gui-col-highlight
+      color: white
+      border-radius: 10px
+      vertical-align: middle
+      line-height: 50px
+      margin-top: 5px
+      box-shadow: 0px 0px 3px 1px $gui-col-shadow
+
+      &:hover
+        box-shadow: 0px 1px 2px 2px $gui-col-shadow
+        position: relative
+        top: -1px
+
+      &.active
+        box-shadow: inset 0px 0px 11px 0px $gui-col-shadow
+        position: relative
+        top: 0px
+        background-color: $gui-col-pressed
+
+    &::after
+      margin-top: 15px
+      display: block
+      content: " "
+      width: inherit
+      border-bottom: 2px solid $gui-col-shadow
+
+  .layers
+    padding: 5px
+    height: max-content
+
+    .layer
+      color: white
+      width: calc(100% - 6px)
+      height: $gui-layer-height
+      line-height: $gui-layer-height
+      text-align: left
+      padding-left: 6px
+      vertical-align: middle
+      background-color: $gui-col-highlight
+      border-radius: 10px
+      margin-top: 5px
+      box-shadow: 0px 0px 3px 1px $gui-col-shadow
+      cursor: pointer
+      overflow-x: auto
+
+      .remove
+        display: none
+
+        &:hover
+          position: relative
+          text-shadow: 0px 1px 3px $gui-col-shadow
+          top: -1
+
+      &:hover
+        box-shadow: 0px 1px 2px 2px $gui-col-shadow
+        position: relative
+        top: -1px
+
+      &.add
+        text-align: center
+
+      &.template
+        display: none
+
+      &.active
+        box-shadow: inset 0px 0px 11px 0px $gui-col-shadow
+        position: relative
+        top: 0px
+        background-color: $gui-col-pressed
+
+        .remove
+          display: inline
+          line-height: $gui-layer-height
+          float: right
+          padding-right: 10px
+          vertical-align: center
+
+          &:hover
+            position: relative
+            text-shadow: 0px 1px 3px $gui-col-shadow
+            top: -1
+
+    &::after
+      margin-top: 15px
+      display: block
+      content: " "
+      width: inherit
+      border-bottom: 2px solid $gui-col-shadow
+
+  .switcher
+    padding: 5px
+    margin: 5px
+    text-align: center
+    height: $gui-switcher-height
+    background-color: $gui-col-highlight
+    border-radius: 10px
+    box-shadow: 0px 0px 3px 1px $gui-col-shadow
+    line-height: $gui-switcher-height
+
+    &::after
+      content: " "
+      display: block
+      border-right: 2px solid white
+      position: relative
+      left: 50%
+      width: 1px
+      height: 100%
+
+    .switcheritem
+      display: inline
+      width: 50%
+      color: #bdbdbd
+      vertical-align: middle
+      cursor: pointer
+
+      &:hover
+        top: -1
+        position: relative
+      &.active
+        position: relative
+        top: 1px
+        color: white
+      &:first-child
+        float: left
+      &:last-child
+        float: right
+
+  .tiles, .instances
+    padding: 5px
+    text-align: center
+    overflow-y: auto
+    height: min-content
+    display: none
+
+    &.active
+      display: block
+
+    img.tile, img.instance
+      cursor: pointer
+      width: 64px
+      height: 64px
+      image-rendering: pixelated
+      background-color: $gui-col-highlight
+      border-radius: 10px
+      box-shadow: 0px 0px 3px 1px $gui-col-shadow
+      margin: 5px
+
+      &:hover
+        box-shadow: 0px 1px 2px 2px $gui-col-shadow
+        position: relative
+        top: -1px
+
+      &.active
+        box-shadow: inset 0px 0px 11px 0px $gui-col-shadow
+        position: relative
+        top: 0px
+        background-color: $gui-col-pressed
+
+#grid, #selection
+  height: inherit
+  float: left
+  width: calc(100% - #{$gui-sidebar-size)})
+  image-rendering: pixelated
+  position: absolute
+
+#editor
+  height: inherit
+  float: left
+  width: calc(100% - #{$gui-sidebar-size})
+  background-color: $gui-col-mid
+  box-shadow: inset -6px 6px 10px 0px lighten($gui-col-shadow, 6)
+  image-rendering: pixelated
