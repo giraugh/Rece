@@ -9,6 +9,10 @@ module.exports =
     inCanvas: ->
       x = @x - $('#editor').position().left
       y = @y - $('#editor').position().top
+      x *= Camera.zoom
+      y *= Camera.zoom
+      x -= Camera.origin[0]
+      y -= Camera.origin[1]
       return [x, y]
     inCanvasRaw: ->
       x = @x - $('#editor').position().left

@@ -148,6 +148,9 @@ $(document).ready ->
   updateProject()
 
 $(document).on 'mousewheel', ({originalEvent})->
+  Camera.mouseWheel originalEvent
+  drawGrid()
+  draw()
 
 $(document).on 'keydown', (e)->
   if not e.ctrlKey
@@ -234,12 +237,16 @@ $(document).on 'keyup', (e)->
 $(document).on 'mousemove', (e)->
   conf.mouse.x = e.clientX
   conf.mouse.y = e.clientY
+  Camera.mouseMove e
   if e.buttons is 1 or e.buttons is 3
     processClick e, false
 
 $(document).on 'mousedown', (e)->
   #Press mouse
   conf.mouse.down[e.button] = true
+
+  if e.button is 2
+    Camera.startDragging()
 
   #Use Tools
   if e.button is 0
@@ -251,6 +258,9 @@ $(document).on 'mousedown', (e)->
 $(document).on 'mouseup', (e)->
   #Release mouse values
   conf.mouse.down[e.button] = false
+
+  if e.button is 2
+    Camera.stopDragging()
 
   #Finish Selecting
   if e.button is 0
