@@ -5,8 +5,10 @@ html
     title Rece Editor
     meta(charset="utf-8")
     link(rel="stylesheet", type="text/css", href="style.min.css")
-    script(src="io.js")
-    script(src="index.js")
+    script.
+      console.log(__dirname)
+      require('coffee-script').register()
+      require('./index.coffee')
 
   body
     #wrapper

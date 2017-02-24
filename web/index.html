@@ -4,8 +4,12 @@
     <title>Rece Editor</title>
     <meta charset="utf-8"/>
     <link rel="stylesheet" type="text/css" href="style.min.css"/>
-    <script src="io.js"></script>
-    <script src="index.js"></script>
+    <script>
+      console.log(__dirname)
+      require('coffee-script').register()
+      require('./index.coffee')
+      
+    </script>
   </head>
   <body>
     <div id="wrapper">
