@@ -12,6 +12,7 @@ $gui-col-pressed: #4770b3
 
 $gui-sidebar-size: 160px
 $gui-layer-height: 35px
+$gui-layers-height: 350px
 $gui-switcher-height: 25px
 
 *
@@ -121,7 +122,9 @@ nav#sidebar
 
   .layers
     padding: 5px
-    height: max-content
+    max-height: $gui-layers-height
+    //min-height: min-content
+    overflow: auto
 
     .layer
       color: white

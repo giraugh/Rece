@@ -2,7 +2,7 @@
 window.$ = window.jQuery = require 'jquery'
 
 #Require 'vex' prompts
-vex = require 'vex-js'
+window.vex = require 'vex-js'
 vex.registerPlugin require 'vex-dialog'
 vex.defaultOptions.className = 'vex-theme-plain'
 
@@ -41,6 +41,9 @@ window.changeLayer = (x)->
   if tls[conf.layer] is undefined
     lnm[conf.layer] = "Layer #{conf.layer+1}"
     tls[conf.layer] = []
+  for i in [0...tls.length]
+    if tls[i] is undefined
+      tls[i] = []
 
 window.getLayerName = ->lnm[conf.layer]
 
@@ -60,74 +63,75 @@ window.processClick = (e, isSingle)->
   [mx, my] = conf.mouse.asTile()
   [mxa, mya] = conf.mouse.inCanvas()
 
-  switch conf.tool
+  if mxa > Camera.left() and mya > Camera.top()
+    switch conf.tool
 
-    when 'Place'
-      if conf.switcher is 'Tiles'
-        if conf.tile >= 0 and noTileAt mx, my
-          tls[conf.layer].push new Entity 'Tile', conf.tile, mx, my
-      if conf.switcher is 'Instances' and (isSingle or e.ctrlKey)
-        if conf.instance >= 0
-          tls[conf.layer].push new Entity 'Instance', conf.instance, mxa, mya
-      draw()
-
-    when 'Remove'
-      for i in [0...tls[conf.layer].length]
-        t = tls[conf.layer][i]
+      when 'Place'
         if conf.switcher is 'Tiles'
-          if t.x is mx and t.y is my
-            tls[conf.layer].splice i, 1
-            break
+          if conf.tile >= 0 and noTileAt mx, my
+            tls[conf.layer].push new Entity 'Tile', conf.tile, mx, my
+        if conf.switcher is 'Instances' and (isSingle or e.ctrlKey)
+          if conf.instance >= 0
+            tls[conf.layer].push new Entity 'Instance', conf.instance, mxa, mya
+        draw()
+
+      when 'Remove'
+        for i in [0...tls[conf.layer].length]
+          t = tls[conf.layer][i]
+          if conf.switcher is 'Tiles'
+            if t.x is mx and t.y is my
+              tls[conf.layer].splice i, 1
+              break
+          else
+            if t.instanceOnMouse()
+              tls[conf.layer].splice i, 1
+              break
+        draw()
+
+      when 'Picker'
+        for i in [0...tls[conf.layer].length]
+          t = tls[conf.layer][i]
+          if conf.switcher is 'Tiles'
+            if t.x is mx and t.y is my
+              conf.tile = t.id
+              $.each $('.tile'), (i, e)->
+                $(e).removeClass 'active'
+              $($('.tiles').children()[t.id]).addClass 'active'
+              break
+          else
+            if t.instanceOnMouse()
+              conf.instance = t.id
+              $.each $('.instance'), (i, e)->
+                $(e).removeClass 'active'
+              $($('.instances').children()[t.id]).addClass 'active'
+              break
+      when 'Marquee'
+        if not conf.selection.selecting
+          conf.selection.selecting = true
+          if conf.switcher is 'Tiles'
+            conf.selection.start =
+              x: mx
+              y: my
+            conf.selection.end =
+              x: mx
+              y: my
+          if conf.switcher is 'Instances'
+            conf.selection.start =
+              x: mxa
+              y: mya
+            conf.selection.end =
+              x: mxa
+              y: mya
         else
-          if t.instanceOnMouse()
-            tls[conf.layer].splice i, 1
-            break
-      draw()
-
-    when 'Picker'
-      for i in [0...tls[conf.layer].length]
-        t = tls[conf.layer][i]
-        if conf.switcher is 'Tiles'
-          if t.x is mx and t.y is my
-            conf.tile = t.id
-            $.each $('.tile'), (i, e)->
-              $(e).removeClass 'active'
-            $($('.tiles').children()[t.id]).addClass 'active'
-            break
-        else
-          if t.instanceOnMouse()
-            conf.instance = t.id
-            $.each $('.instance'), (i, e)->
-              $(e).removeClass 'active'
-            $($('.instances').children()[t.id]).addClass 'active'
-            break
-    when 'Marquee'
-      if not conf.selection.selecting
-        conf.selection.selecting = true
-        if conf.switcher is 'Tiles'
-          conf.selection.start =
-            x: mx
-            y: my
-          conf.selection.end =
-            x: mx
-            y: my
-        if conf.switcher is 'Instances'
-          conf.selection.start =
-            x: mxa
-            y: mya
-          conf.selection.end =
-            x: mxa
-            y: mya
-      else
-        if conf.switcher is 'Tiles'
-          conf.selection.end =
-            x: mx
-            y: my
-        if conf.switcher is 'Instances'
-          conf.selection.end =
-            x: mxa
-            y: mya
-      draw()
+          if conf.switcher is 'Tiles'
+            conf.selection.end =
+              x: mx
+              y: my
+          if conf.switcher is 'Instances'
+            conf.selection.end =
+              x: mxa
+              y: mya
+        draw()
 
 
 #Document Events

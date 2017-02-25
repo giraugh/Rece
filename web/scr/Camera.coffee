@@ -43,6 +43,10 @@ window.Camera =
     f()
     [ctx, ctxs, ctxg].forEach (c)->
       c.restore()
+  left: ->
+    -@origin[0] / @zoom
+  top: ->
+    -@origin[1] / @zoom
   redraw: ->
     drawGrid()
     draw()

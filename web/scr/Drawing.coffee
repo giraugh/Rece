@@ -40,7 +40,13 @@ window.drawSelection = ->
       for t in conf.selection.tiles
         [x1, y1, sx, sy] = t.getDrawCoords()
         ctxs.beginPath()
-        ctxs.rect x1, y1, conf.tileSize, conf.tileSize
+        if t.type is 'Tile'
+          ctxs.rect x1, y1, conf.tileSize, conf.tileSize
+        if t.type is 'Instance'
+          ctxs.arc x1+(conf.tileSize/2),
+                   y1+(conf.tileSize/2),
+                   conf.tileSize*.6, 0, 2 * Math.PI
+        ctxs.stroke()
 
 window.drawTiles = ->
   canvasDraw ctx, ->

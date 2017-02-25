@@ -12,6 +12,8 @@ $(document).ready ->
   #Navbar Items
   $('#Quit').on 'click', ->win.close()
   $('#LoadProject').on 'click', window.loadProject
+  $('#SaveLevel').on 'click', window.saveLevel
+  $('#OpenLevel').on 'click', window.openLevel
 
   #Tool Selection
   $.each $('.tool'), (i, e)->
@@ -110,6 +112,8 @@ $(document).ready ->
         r = $('#TemplateLayer').children(0).clone true
 
         n.removeClass 'template'
+        n.addClass 'clone'
+        n.prop('id', '')
         n[0].innerHTML = "Layer #{$('.layers').children().length-2}"
 
         n.insertBefore me.target
@@ -147,10 +151,13 @@ $(document).ready ->
   #Reload previous project
   updateProject()
 
-$(document).on 'mousewheel', ({originalEvent})->
-  Camera.mouseWheel originalEvent
-  drawGrid()
-  draw()
+$(document).on 'mousewheel', (e)->
+  if e.target is $('#selection')[0] or
+     e.target is $('#grid')[0] or
+     e.target is $('#editor')[0]
+      Camera.mouseWheel e.originalEvent
+      drawGrid()
+      draw()
 
 $(document).on 'keydown', (e)->
   if not e.ctrlKey
@@ -217,13 +224,13 @@ $(document).on 'keydown', (e)->
         draw()
 
       when 'ArrowLeft'
-        if conf.switcher is 'Instances' then shiftSelected(-6, 0)
+        if conf.switcher is 'Instances' then shiftSelected(-conf.tileSize/4, 0)
       when 'ArrowRight'
-        if conf.switcher is 'Instances' then shiftSelected(6, 0)
+        if conf.switcher is 'Instances' then shiftSelected(conf.tileSize/4, 0)
       when 'ArrowUp'
-        if conf.switcher is 'Instances' then shiftSelected(0, -6)
+        if conf.switcher is 'Instances' then shiftSelected(0, -conf.tileSize/4)
       when 'ArrowDown'
-        if conf.switcher is 'Instances' then shiftSelected(0, 6)
+        if conf.switcher is 'Instances' then shiftSelected(0, conf.tileSize/4)
 
 $(document).on 'keyup', (e)->
   if e.key is 'Alt'
@@ -246,7 +253,10 @@ $(document).on 'mousedown', (e)->
   conf.mouse.down[e.button] = true
 
   if e.button is 2
-    Camera.startDragging()
+    if e.target is $('#selection')[0] or
+       e.target is $('#grid')[0] or
+       e.target is $('#editor')[0]
+        Camera.startDragging()
 
   #Use Tools
   if e.button is 0
