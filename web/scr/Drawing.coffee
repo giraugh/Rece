@@ -68,4 +68,8 @@ window.clearCanvas = (c, n)->
   c.restore()
 
 window.canvasDraw = (ctx, paint)->
+  ctx.save()
+  Camera.translate(ctx)
+  Camera.scale(ctx)
   paint()
+  ctx.restore()
