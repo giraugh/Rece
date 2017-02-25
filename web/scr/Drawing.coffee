@@ -13,14 +13,20 @@ window.drawGrid = ->
 
     #Draw a nice grid!
     ctxg.strokeStyle = conf.colours.grid
-    for x in [0..cnvsg.width/conf.tileSize]
-      for y in [0..cnvsg.height/conf.tileSize]
-        ctxg.beginPath()
-        ctxg.rect x*conf.tileSize,
-                 y*conf.tileSize,
-                 conf.tileSize,
-                 conf.tileSize
-        ctxg.stroke()
+    if conf.grid
+      for x in [0...conf.levelWidth]
+        for y in [0...conf.levelHeight]
+          ctxg.beginPath()
+          ctxg.rect x*conf.tileSize,
+                   y*conf.tileSize,
+                   conf.tileSize,
+                   conf.tileSize
+          ctxg.stroke()
+    else
+      ctxg.beginPath()
+      ctxg.rect 0, 0, conf.levelWidth*conf.tileSize, conf.levelHeight*conf.tileSize
+      ctxg.stroke()
+
 
 window.drawSelection = ->
   canvasDraw ctxs, ->

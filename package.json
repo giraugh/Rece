@@ -7,5 +7,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Ewan Breakey",
-  "license": "MIT"
+  "license": "MIT",
+  "showDevTools": false
 }

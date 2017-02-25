@@ -1,7 +1,9 @@
 module.exports =
-  tileSize: 64
+  tileSize: 32
   imageSize: 32
-  gridScaleUp: 2
+  gridScaleUp: 1
+  levelWidth: 10
+  levelHeight: 10
   mouse:
     down: [false, false, false, false]
     x: 0
@@ -29,6 +31,7 @@ module.exports =
   switcher: 'Tiles'
   tile: -1
   instance: -1
+  grid: true
   colours:
     grid: '#2f3f58'
     selection: '#1f293a'

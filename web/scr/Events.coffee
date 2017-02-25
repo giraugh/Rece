@@ -3,7 +3,7 @@ $(document).ready ->
   #Fix Tiles Height
   fixTilesAndInstances = ->
     p = $('.layers').height() + $('.tools').height() + $('#topbar').height()
-    e = $(window).height() - (p + 28)
+    e = $(window).height() - (p + conf.tileSize + 16)
     $('.tiles')[0].style.height = e
     $('.instances')[0].style.height = e
   $(window).resize fixTilesAndInstances
@@ -160,77 +160,89 @@ $(document).on 'mousewheel', (e)->
       draw()
 
 $(document).on 'keydown', (e)->
-  if not e.ctrlKey
-    switch e.key
-      when 'Alt'
-        if conf.oldtool is 'None'
+  if $(e.target).attr('name') isnt 'vex'
+    if not e.ctrlKey
+      switch e.key
+        when 'Alt'
+          if conf.oldtool is 'None'
+            $.each $('.tool'), (i, e)->
+              $(e).removeClass 'active'
+            $('#Picker').addClass 'active'
+            conf.oldtool = conf.tool
+            conf.tool = 'Picker'
+          e.preventDefault()
+          return
+
+        when 'ArrowLeft'
+          shiftSelected(-1, 0)
+        when 'ArrowRight'
+          shiftSelected(1, 0)
+        when 'ArrowUp'
+          shiftSelected(0, -1)
+        when 'ArrowDown'
+          shiftSelected(0, 1)
+
+        when 'd'
+          conf.tool = 'Place'
           $.each $('.tool'), (i, e)->
             $(e).removeClass 'active'
-          $('#Picker').addClass 'active'
-          conf.oldtool = conf.tool
-          conf.tool = 'Picker'
-        e.preventDefault()
-        return
-
-      when 'ArrowLeft'
-        shiftSelected(-1, 0)
-      when 'ArrowRight'
-        shiftSelected(1, 0)
-      when 'ArrowUp'
-        shiftSelected(0, -1)
-      when 'ArrowDown'
-        shiftSelected(0, 1)
-
-      when 'd'
-        conf.tool = 'Place'
-        $.each $('.tool'), (i, e)->
-          $(e).removeClass 'active'
-        $('#Place').addClass 'active'
-      when 'e'
-        conf.tool = 'Remove'
-        $.each $('.tool'), (i, e)->
-          $(e).removeClass 'active'
-        $('#Remove').addClass 'active'
-      when 's'
-        conf.tool = 'Marquee'
-        $.each $('.tool'), (i, e)->
-          $(e).removeClass 'active'
-        $('#Marquee').addClass 'active'
-      when 'Delete'
-        for tile in conf.selection.tiles
-          tls[conf.layer].splice tls[conf.layer].indexOf(tile), 1
-        conf.selection.tiles = []
-        e.preventDefault()
-        draw()
-  else
-    switch e.key
-      when 'a'
-        conf.selection.tiles = []
-        for tile in tls[conf.layer]
-          conf.selection.tiles.push tile
-        e.preventDefault()
-        draw()
-      when 'i'
-        os = conf.selection.tiles
-        conf.selection.tiles = []
-        for tile in tls[conf.layer]
-          if -1 is os.indexOf tile
+          $('#Place').addClass 'active'
+        when 'e'
+          conf.tool = 'Remove'
+          $.each $('.tool'), (i, e)->
+            $(e).removeClass 'active'
+          $('#Remove').addClass 'active'
+        when 's'
+          conf.tool = 'Marquee'
+          $.each $('.tool'), (i, e)->
+            $(e).removeClass 'active'
+          $('#Marquee').addClass 'active'
+        when 'g'
+          conf.grid = not conf.grid
+          drawGrid()
+        when 'Delete'
+          for tile in conf.selection.tiles
+            tls[conf.layer].splice tls[conf.layer].indexOf(tile), 1
+          conf.selection.tiles = []
+          e.preventDefault()
+          draw()
+    else
+      switch e.key
+        when 'a'
+          conf.selection.tiles = []
+          for tile in tls[conf.layer]
             conf.selection.tiles.push tile
-        e.preventDefault()
-        draw()
-      when 'd'
-        conf.selection.tiles = []
-        e.preventDefault()
-        draw()
+          e.preventDefault()
+          draw()
+        when 'i'
+          os = conf.selection.tiles
+          conf.selection.tiles = []
+          for tile in tls[conf.layer]
+            if -1 is os.indexOf tile
+              conf.selection.tiles.push tile
+          e.preventDefault()
+          draw()
+        when 'v'
+          #Duplicate
+          os = conf.selection.tiles
+          conf.selection.tiles = []
+          for tile in os
+            t = new Entity tile.type, tile.id, tile.x, tile.y
+            conf.selection.tiles.push t
+            tls[conf.layer].push t
+        when 'd'
+          conf.selection.tiles = []
+          e.preventDefault()
+          draw()
 
-      when 'ArrowLeft'
-        if conf.switcher is 'Instances' then shiftSelected(-conf.tileSize/4, 0)
-      when 'ArrowRight'
-        if conf.switcher is 'Instances' then shiftSelected(conf.tileSize/4, 0)
-      when 'ArrowUp'
-        if conf.switcher is 'Instances' then shiftSelected(0, -conf.tileSize/4)
-      when 'ArrowDown'
-        if conf.switcher is 'Instances' then shiftSelected(0, conf.tileSize/4)
+        when 'ArrowLeft'
+          if conf.switcher is 'Instances' then shiftSelected(-conf.tileSize/4, 0)
+        when 'ArrowRight'
+          if conf.switcher is 'Instances' then shiftSelected(conf.tileSize/4, 0)
+        when 'ArrowUp'
+          if conf.switcher is 'Instances' then shiftSelected(0, -conf.tileSize/4)
+        when 'ArrowDown'
+          if conf.switcher is 'Instances' then shiftSelected(0, conf.tileSize/4)
 
 $(document).on 'keyup', (e)->
   if e.key is 'Alt'
@@ -278,7 +290,26 @@ $(document).on 'mouseup', (e)->
       conf.selection.selecting = false
       conf.selection.tiles = []
       [x1, y1, x2, y2] = conf.selection.getCoords()
-      for t in tls[conf.layer]
-          if t.x >= x1 and t.y >= y1 and t.x < x2 and t.y < y2
-            conf.selection.tiles.push t
+
+      if e.ctrlKey
+        xd = (x2-x1)
+        yd = (y2-y1)
+        if conf.switcher is 'Instances'
+          xd /= conf.tileSize
+          yd /= conf.tileSize
+        for i in [0...xd]
+          for j in [0...yd]
+            xx = x1 + i
+            yy = y1 + j
+            if conf.switcher is 'Tiles'
+              tls[conf.layer].push new Entity 'Tile',
+                                              conf.tile,
+                                              xx,
+                                              yy
+            if conf.switcher is 'Instances'
+              tls[conf.layer].push new Entity 'Instance', conf.tile, x1 + (i * conf.tileSize), y1 + (j * conf.tileSize)
+      else
+        for t in tls[conf.layer]
+            if t.x >= x1 and t.y >= y1 and t.x < x2 and t.y < y2
+              conf.selection.tiles.push t
     draw()

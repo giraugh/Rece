@@ -1,9 +1,10 @@
 fs = require 'fs-extra'
 klaw = require 'klaw-sync'
 path = require 'path'
+cson = require 'cson'
 {dialog} = require('electron').remote
 
-loaded = ->path.join __dirname, '..\\_loaded'
+loaded = ->path.join __dirname, '..\\..\\_loaded'
 
 window.saveLevel = ->
   o =
@@ -11,7 +12,7 @@ window.saveLevel = ->
     layers: []
 
   #Save Layer Names (other than MAIN, TEMPLATE and ADD)
-  layers = $('.layer').filter (i, l)-> i > 1 and i isnt $('.layer').length-1
+  layers = $('.layer').filter (i, l)-> i > 0 and i isnt $('.layer').length-1
   layers.map (i, l)->o.layers.push l.childNodes[0].nodeValue
 
   #Save Level Data
@@ -56,17 +57,20 @@ window.openLevel = ->
   $('#MainLayer').addClass 'active'
 
   #Add layers
+  mainl = layers[0]
+  $('#MainLayer')[0].childNodes[0].nodeValue = mainl
   for layer in layers
-    n = $('#TemplateLayer').clone true
-    r = $('#TemplateLayer').children(0).clone true
+    if layer isnt mainl
+      n = $('#TemplateLayer').clone true
+      r = $('#TemplateLayer').children(0).clone true
 
-    n.removeClass 'template'
-    n.addClass 'clone'
-    n.prop('id', '')
-    n[0].innerHTML = layer
+      n.removeClass 'template'
+      n.addClass 'clone'
+      n.prop('id', '')
+      n[0].innerHTML = layer
 
-    n.insertBefore $('.layer.add')
-    r.appendTo n
+      n.insertBefore $('.layer.add')
+      r.appendTo n
 
   #Redraw
   Camera.redraw()
@@ -126,7 +130,19 @@ window.updateProject = ->
 
   #Reset tiles
   window.tls = [[]]
+
+  #Read Config
+  if fs.existsSync path.join loaded(), 'project.cson'
+    lconf = cson.load path.join loaded(), 'project.cson'
+    conf.tileSize = lconf.tileSize or conf.tileSize
+    conf.gridScaleUp = lconf.gridScaleUp or conf.gridScaleUp
+    conf.imageSize = lconf.imageSize or conf.imageSize
+    conf.levelWidth = lconf.levelWidth or conf.levelWidth
+    conf.levelHeight = lconf.levelHeight or conf.levelHeight
+
+  #Draw
   draw()
+  drawGrid()
 
   updateTilesAndInstances()
 
@@ -136,6 +152,7 @@ window.loadProject = ->
   if not projectPath then return else projectPath = projectPath[0]
   tilesPath = path.join(projectPath, 'tiles')
   instancesPath = path.join(projectPath, 'instances')
+  configPath = path.join(projectPath, 'project.cson')
 
   #Delete _loaded
   fs.removeSync path.join loaded()
@@ -145,6 +162,10 @@ window.loadProject = ->
     fs.copySync tilesPath, path.join loaded(), 'tiles'
   if fs.existsSync instancesPath
     fs.copySync instancesPath, path.join loaded(), 'instances'
+
+  #Copy Config
+  if fs.existsSync configPath
+    fs.copySync configPath, path.join loaded(), 'project.cson'
 
   #Update the project
   updateProject()
