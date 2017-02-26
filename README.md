@@ -45,23 +45,23 @@ Now you can load a level, use the **Open Level** button and select a `.lvl` file
 ---
 
 ### Parts of Rece
-##### The Topbar
+#### The Topbar
 Houses the IO functionality.
 
-##### The navbar
+#### The navbar
 Houses the Tools, Layers, Tiles and Instances.
 
-##### The editor
+#### The editor
 This is where you place tiles and instances, it's view can be panned with `RMB + Drag` and zoomed with the `MOUSE WHEEL`.
 
-##### Tools
+#### Tools
 There are four tools;
   - __The place Tool__ (`D`) - Places tiles and instances.
   - __The remove Tool__ (`E`) - Removes tiles and instances.
   - __The Select Tool__ (`S`) - Selects a group of tiles and instances, hold `CTRL` while selecting to fill the region instead of selecting.
   - __The Picker Tool__ (hold `ALT`) - Selects a tile or instance to select it in the tile/instance view.
 
-##### Layers
+#### Layers
 Layers split the level into parts, They can be selected by being clicked on, you can add a layer by clicking on the `+`,  removed by clicking on the `RUBBISH BIN` and renamed by being selected while already selected.
 
 #### Extra Functionality
