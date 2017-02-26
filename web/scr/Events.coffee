@@ -43,9 +43,9 @@ $(document).ready ->
         $.each $('.tile'), (i, e)->
           $(e).removeClass 'active'
         conf.tile =
-          Array.prototype.indexOf.call me.target.parentElement.children,
-                                       me.target
-        $(me.target).addClass 'active'
+          Array.prototype.indexOf.call e.parentElement.children,
+                                       e
+        $(e).addClass 'active'
 
     #Instance Selection
     $.each $('.instance'), (i, e)->
@@ -53,20 +53,20 @@ $(document).ready ->
         $.each $('.instance'), (i, e)->
           $(e).removeClass 'active'
         conf.instance =
-          Array.prototype.indexOf.call me.target.parentElement.children,
-                                       me.target
-        $(me.target).addClass 'active'
+          Array.prototype.indexOf.call e.parentElement.children,
+                                       e
+        $(e).addClass 'active'
 
     #Collate All Tile Image Src's
     window.tlis = []
-    $.each $('.tile'), (i, e)->
+    $.each $('.tile-img'), (i, e)->
       i = new Image
       i.src = e.src
       tlis.push i
 
     #Collate All Tile Entity Src's
     window.inis = []
-    $.each $('.instance'), (i, e)->
+    $.each $('.instance-img'), (i, e)->
       i = new Image
       i.src = e.src
       inis.push i

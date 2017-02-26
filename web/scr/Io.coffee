@@ -96,6 +96,20 @@ window.updateProject = ->
     ]
   }
 
+  getTileValue = (t)-> return eval t.path.match(/tile([0-9]+)/)[1] or 0
+
+  tiles.sort (a, b)->
+    if getTileValue(a) is getTileValue(b)
+      return 0
+
+    if getTileValue(a) < getTileValue(b)
+      return -1
+
+    if getTileValue(a) > getTileValue(b)
+      return 1
+
+
+
   #Remove pre-existing tiles
   if $('.tile').length > 0 then $.each $('.tile'), (i, e)->$(e).remove()
   if $('.instances').length > 0 then $.each $('.instance'), (i, e)->$(e).remove()
@@ -103,12 +117,19 @@ window.updateProject = ->
   #Create tiles and append them
   tiles.forEach (t, i)->
     d = $ '<img/>', {
-      class: "tile #{if i is 0 then 'active' else ''}"
+      class: "tile-img #{if i is 0 then 'active' else ''}"
       src: t.path
     }
 
+    e = $ '<div/>', {
+      class: "tile"
+    }
+
+    #Add img to div
+    d.appendTo e
+
     #add to DOM
-    d.appendTo $ '.tiles'
+    e.appendTo $ '.tiles'
 
     #Set Selected Tile
     if i is 0
@@ -117,12 +138,19 @@ window.updateProject = ->
   #Create instances and append them
   instances.forEach (t, i)->
     d = $ '<img/>', {
-      class: "instance #{if i is 0 then 'active' else ''}"
+      class: "instance-img #{if i is 0 then 'active' else ''}"
       src: t.path
     }
 
+    e = $ '<div/>', {
+      class: "instance"
+    }
+
+    #Add img to div
+    d.appendTo e
+
     #add to DOM
-    d.appendTo $ '.instances'
+    e.appendTo $ '.instances'
 
     #Set Selected Tile
     if i is 0

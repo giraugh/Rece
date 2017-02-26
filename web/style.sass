@@ -233,15 +233,19 @@ nav#sidebar
     &.active
       display: block
 
-    img.tile, img.instance
+    .tile, .instance
       cursor: pointer
       width: 64px
       height: 64px
       image-rendering: pixelated
       background-color: $gui-col-highlight
-      border-radius: 10px
       box-shadow: 0px 0px 3px 1px $gui-col-shadow
       margin: 5px
+      border-radius: 10px
+      display: inline-block
+
+      img
+        border-radius: inherit
 
       &:hover
         box-shadow: 0px 1px 2px 2px $gui-col-shadow
@@ -249,10 +253,20 @@ nav#sidebar
         top: -1px
 
       &.active
-        box-shadow: inset 0px 0px 11px 0px $gui-col-shadow
         position: relative
         top: 1px
         background-color: $gui-col-pressed
+        box-shadow: inset 0px 0px 11px 0px $gui-col-shadow
+
+    .tile
+      img
+        width: 100%
+        height: 100%
+
+    .instance
+      img
+        max-width: 100%
+        max-height: 100%
 
 #grid, #selection
   height: inherit

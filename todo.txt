@@ -1,3 +1,0 @@
--Don't squish instances
--Grid alpha option
--Reorder Tiles

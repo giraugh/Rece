@@ -68,8 +68,8 @@ window.drawTiles = ->
         img = if tile.type is 'Tile' then tlis[tile.id] else inis[tile.id]
         ctx.drawImage img,
                       x, y
-                      conf.imageSize*conf.gridScaleUp,
-                      conf.imageSize*conf.gridScaleUp
+                      img.width*conf.gridScaleUp,
+                      img.height*conf.gridScaleUp
 
 window.clearCanvas = (c, n)->
   c.save()
