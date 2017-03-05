@@ -62,14 +62,16 @@ window.drawTiles = ->
     ctx.imageSmoothingEnabled = false
 
     #Draw Tiles
-    for layer in window.tls
-      for tile in layer
-        [x, y] = tile.getDrawCoords()
-        img = if tile.type is 'Tile' then tlis[tile.id] else inis[tile.id]
-        ctx.drawImage img,
-                      x, y
-                      img.width*conf.gridScaleUp,
-                      img.height*conf.gridScaleUp
+    for i in [0...tls.length]
+      if vis[i]
+        layer = tls[i]
+        for tile in layer
+          [x, y] = tile.getDrawCoords()
+          img = if tile.type is 'Tile' then tlis[tile.id] else inis[tile.id]
+          ctx.drawImage img,
+                        x, y
+                        img.width*conf.gridScaleUp,
+                        img.height*conf.gridScaleUp
 
 window.clearCanvas = (c, n)->
   c.save()

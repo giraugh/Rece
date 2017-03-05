@@ -9,11 +9,15 @@ $(document).ready ->
   $(window).resize fixTilesAndInstances
   fixTilesAndInstances()
 
+  #Make Tiles re-orderable
+  sortable.create($('.tiles')[0])
+
   #Navbar Items
   $('#Quit').on 'click', ->win.close()
   $('#LoadProject').on 'click', window.loadProject
   $('#SaveLevel').on 'click', window.saveLevel
   $('#OpenLevel').on 'click', window.openLevel
+
 
   #Tool Selection
   $.each $('.tool'), (i, e)->
@@ -175,12 +179,16 @@ $(document).on 'keydown', (e)->
 
         when 'ArrowLeft'
           shiftSelected(-1, 0)
+          didCommand()
         when 'ArrowRight'
           shiftSelected(1, 0)
+          didCommand()
         when 'ArrowUp'
           shiftSelected(0, -1)
+          didCommand()
         when 'ArrowDown'
           shiftSelected(0, 1)
+          didCommand()
 
         when 'd'
           conf.tool = 'Place'
@@ -200,12 +208,21 @@ $(document).on 'keydown', (e)->
         when 'g'
           conf.grid = not conf.grid
           drawGrid()
+        when 'h'
+          vis[conf.layer] = !vis[conf.layer]
+          l = $($('.layer')[conf.layer+1])
+          if not l.hasClass 'hidden'
+            l.addClass 'hidden'
+          else
+            l.removeClass 'hidden'
+          draw()
         when 'Delete'
           for tile in conf.selection.tiles
             tls[conf.layer].splice tls[conf.layer].indexOf(tile), 1
           conf.selection.tiles = []
           e.preventDefault()
           draw()
+          didCommand()
     else
       switch e.key
         when 'a'
@@ -234,15 +251,27 @@ $(document).on 'keydown', (e)->
           conf.selection.tiles = []
           e.preventDefault()
           draw()
+        when 'z'
+          undoCommand()
+        when 'x'
+          redoCommand()
 
         when 'ArrowLeft'
-          if conf.switcher is 'Instances' then shiftSelected(-conf.tileSize/4, 0)
+          if conf.switcher is 'Instances'
+            shiftSelected(-conf.tileSize/4, 0)
+            didCommand()
         when 'ArrowRight'
-          if conf.switcher is 'Instances' then shiftSelected(conf.tileSize/4, 0)
+          if conf.switcher is 'Instances'
+            shiftSelected(conf.tileSize/4, 0)
+            didCommand()
         when 'ArrowUp'
-          if conf.switcher is 'Instances' then shiftSelected(0, -conf.tileSize/4)
+          if conf.switcher is 'Instances'
+            shiftSelected(0, -conf.tileSize/4)
+            didCommand()
         when 'ArrowDown'
-          if conf.switcher is 'Instances' then shiftSelected(0, conf.tileSize/4)
+          if conf.switcher is 'Instances'
+            shiftSelected(0, conf.tileSize/4)
+            didCommand()
 
 $(document).on 'keyup', (e)->
   if e.key is 'Alt'
@@ -286,6 +315,11 @@ $(document).on 'mouseup', (e)->
 
   #Finish Selecting
   if e.button is 0
+    #Did we just finish adding or removing?
+    if conf.tool is 'Place' or conf.tools is 'Remove'
+      [mxa, mya] = conf.mouse.inCanvas()
+      if mxa > Camera.left() and mya > Camera.top()
+        didCommand()
     if conf.selection.selecting
       conf.selection.selecting = false
       conf.selection.tiles = []

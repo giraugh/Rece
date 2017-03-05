@@ -6,6 +6,8 @@ window.vex = require 'vex-js'
 vex.registerPlugin require 'vex-dialog'
 vex.defaultOptions.className = 'vex-theme-plain'
 
+#Require 'sortable' library
+window.sortable = require('sortablejs')
 
 #Get reference to app
 window.remote = require('electron').remote
@@ -33,6 +35,7 @@ require './scr/Entity.coffee'
 #Utility
 
 window.tls = [[]]
+window.vis = [true]
 
 window.lnm = ["Main"]
 
@@ -41,9 +44,11 @@ window.changeLayer = (x)->
   if tls[conf.layer] is undefined
     lnm[conf.layer] = "Layer #{conf.layer+1}"
     tls[conf.layer] = []
+    vis[conf.layer] = true
   for i in [0...tls.length]
     if tls[i] is undefined
       tls[i] = []
+      vis[i] = true
 
 window.getLayerName = ->lnm[conf.layer]
 
@@ -133,6 +138,23 @@ window.processClick = (e, isSingle)->
               y: mya
         draw()
 
+window.didCommand = ->
+  conf.history.push $.extend(true, [], window.tls)
+  conf.rhistory = []
+  if (conf.history.length+1) > conf.historymax
+    conf.history.shift()
+
+window.undoCommand = ->
+  if conf.history.length > 1
+    conf.rhistory.push $.extend(true, [], conf.history.pop())
+    window.tls = $.extend(true, [], conf.history[conf.history.length-1])
+    draw()
+
+window.redoCommand = ->
+  if conf.rhistory.length > 0
+    window.tls = $.extend(true, [], conf.rhistory.pop())
+    conf.history.push $.extend(true, [], window.tls)
+    draw()
 
 #Document Events
 require './scr/Events.coffee'

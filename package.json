@@ -8,5 +8,8 @@
   },
   "author": "Ewan Breakey",
   "license": "MIT",
-  "showDevTools": false
+  "showDevTools": false,
+  "dependencies": {
+    "sortablejs": "^1.5.1"
+  }
 }

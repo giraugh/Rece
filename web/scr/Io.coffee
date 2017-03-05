@@ -46,6 +46,10 @@ window.openLevel = ->
   #Set tls
   window.tls = imp
 
+  #Delete history
+  conf.history = [$.extend(true, [], window.tls)]
+  conf.rhistory = []
+
   #Remove all CLONE layers
   $('.layer.clone').map (i, l)->
     l.parentElement.removeChild l
@@ -55,6 +59,11 @@ window.openLevel = ->
   $.each $('.layer'), (i, e)->
     $(e).removeClass 'active'
   $('#MainLayer').addClass 'active'
+
+  #Show all layers
+  $.each $('.layer'), (i, e)->
+    $(e).removeClass 'hidden'
+  window.vis[i] = true for i in [0...layers.length]
 
   #Add layers
   mainl = layers[0]
@@ -96,7 +105,8 @@ window.updateProject = ->
     ]
   }
 
-  getTileValue = (t)-> return eval t.path.match(/tile([0-9]+)/)[1] or 0
+  ###
+  getTileValue = (t)-> return eval (t.path.match(/t(?:ile)?-?s?([0-9]+)/) or [0,0])[1] or 0
 
   tiles.sort (a, b)->
     if getTileValue(a) is getTileValue(b)
@@ -107,7 +117,7 @@ window.updateProject = ->
 
     if getTileValue(a) > getTileValue(b)
       return 1
-
+  ###
 
 
   #Remove pre-existing tiles
@@ -173,7 +183,6 @@ window.updateProject = ->
   drawGrid()
 
   updateTilesAndInstances()
-
 
 window.loadProject = ->
   projectPath = dialog.showOpenDialog {properties: ['openDirectory']}

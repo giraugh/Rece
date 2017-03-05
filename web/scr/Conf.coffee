@@ -4,6 +4,9 @@ module.exports =
   gridScaleUp: 1
   levelWidth: 10
   levelHeight: 10
+  history: [[[]]]
+  historymax: 20
+  rhistory: []
   mouse:
     down: [false, false, false, false]
     x: 0

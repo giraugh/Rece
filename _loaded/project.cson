@@ -1,5 +1,5 @@
-tileSize: 64
+tileSize: 32
 gridScaleUp: 2
-imageSize: 32
+imageSize: 16
 levelWidth: 20
 levelHeight: 20
