@@ -40,12 +40,10 @@ $(document).ready ->
     $.each $('.folder'), (i, e)->
       $(e).on 'click', (me)->
         if $(me.target).hasClass 'open'
-          console.log 'change class to closed'
           $(me.target).removeClass 'open'
           $(me.target).addClass 'closed'
           return
         else
-          console.log 'change class to open'
           $(me.target).addClass 'open'
           $(me.target).removeClass 'closed'
           return
