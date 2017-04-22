@@ -6,9 +6,6 @@ window.vex = require 'vex-js'
 vex.registerPlugin require 'vex-dialog'
 vex.defaultOptions.className = 'vex-theme-plain'
 
-#Require 'sortable' library
-window.sortable = require('sortablejs')
-
 #Get reference to app
 window.remote = require('electron').remote
 window.win = remote.getCurrentWindow()
@@ -73,10 +70,10 @@ window.processClick = (e, isSingle)->
 
       when 'Place'
         if conf.switcher is 'Tiles'
-          if conf.tile >= 0 and noTileAt mx, my
+          if conf.tile and noTileAt mx, my
             tls[conf.layer].push new Entity 'Tile', conf.tile, mx, my
         if conf.switcher is 'Instances' and (isSingle or e.ctrlKey)
-          if conf.instance >= 0
+          if conf.instance
             tls[conf.layer].push new Entity 'Instance', conf.instance, mxa, mya
         draw()
 

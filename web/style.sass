@@ -1,7 +1,8 @@
+//auto-compile this one please!
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons")
 @import url("https://fonts.googleapis.com/css?family=Muli")
 @import "../node_modules/vex-js/dist/css/vex.css"
-@import "../node_modules/vex-js/dist/css/vex-theme-le.css"
+@import "./styles/vex-theme-le.css"
 
 $gui-col-light: #3963a8
 $gui-col-mid: #445c82
@@ -12,6 +13,7 @@ $gui-col-pressed: #4770b3
 
 $gui-sidebar-size: 160px
 $gui-layer-height: 35px
+$gui-folder-height: 32px
 $gui-layers-height: 350px
 $gui-switcher-height: 25px
 
@@ -270,6 +272,39 @@ nav#sidebar
       img
         max-width: 100%
         max-height: 100%
+
+    .folder
+      .tile, .instance
+        margin: 4px
+        width: 55px
+        height: 55px
+
+      &::before
+        content: attr(title)
+        vertical-align: middle
+        width: calc(90% - 6px)
+        background-color: $gui-col-highlight
+        box-shadow: 0px 0px 3px 1px $gui-col-shadow
+        border-radius: 10px
+        height: $gui-folder-height
+        line-height: $gui-folder-height
+        display: inline-block
+        color: white
+        text-align: left
+        padding-left: 6px
+        margin-top: 5px
+        cursor: pointer
+        overflow-x: auto
+
+      &.open
+        box-shadow: inset 0px 0px 3px 1px $gui-col-shadow
+        width: 95%
+        margin: auto
+        border-radius: 5px
+
+      &.closed
+        .tile, .instance
+          display: none
 
 #grid, #selection
   height: inherit

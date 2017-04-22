@@ -6,3 +6,5 @@ web/index.js
 web/io.js
 index.html
 style.min.css
+yarn.lock
+.gitignore

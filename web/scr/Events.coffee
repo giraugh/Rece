@@ -3,21 +3,17 @@ $(document).ready ->
   #Fix Tiles Height
   fixTilesAndInstances = ->
     p = $('.layers').height() + $('.tools').height() + $('#topbar').height()
-    e = $(window).height() - (p + conf.tileSize + 16)
+    e = $(window).height() - (p + (conf.tileSize*2) + 8)
     $('.tiles')[0].style.height = e
     $('.instances')[0].style.height = e
   $(window).resize fixTilesAndInstances
   fixTilesAndInstances()
 
-  #Make Tiles re-orderable
-  sortable.create($('.tiles')[0])
-
   #Navbar Items
   $('#Quit').on 'click', ->win.close()
-  $('#LoadProject').on 'click', window.loadProject
-  $('#SaveLevel').on 'click', window.saveLevel
-  $('#OpenLevel').on 'click', window.openLevel
-
+  $('#LoadProject').on 'click', ->window.loadProject()
+  $('#SaveLevel').on 'click', ->window.saveLevel()
+  $('#OpenLevel').on 'click', ->window.openLevel()
 
   #Tool Selection
   $.each $('.tool'), (i, e)->
@@ -39,6 +35,21 @@ $(document).ready ->
       $('.instances').removeClass 'active'
       $(".#{$(me.target).attr('id').toLowerCase()}").addClass 'active'
 
+  window.updateFolders = ->
+    #Folder opening and closing
+    $.each $('.folder'), (i, e)->
+      $(e).on 'click', (me)->
+        if $(me.target).hasClass 'open'
+          console.log 'change class to closed'
+          $(me.target).removeClass 'open'
+          $(me.target).addClass 'closed'
+          return
+        else
+          console.log 'change class to open'
+          $(me.target).addClass 'open'
+          $(me.target).removeClass 'closed'
+          return
+  updateFolders()
 
   window.updateTilesAndInstances = ->
     #Tile Selection
@@ -46,9 +57,7 @@ $(document).ready ->
       $(e).on 'click', (me)->
         $.each $('.tile'), (i, e)->
           $(e).removeClass 'active'
-        conf.tile =
-          Array.prototype.indexOf.call e.parentElement.children,
-                                       e
+        conf.tile = $(e).children()[0].src.replace(/[\s\S]*\/_loaded\/([\s\S]*)/, "$1")
         $(e).addClass 'active'
 
     #Instance Selection
@@ -56,24 +65,22 @@ $(document).ready ->
       $(e).on 'click', (me)->
         $.each $('.instance'), (i, e)->
           $(e).removeClass 'active'
-        conf.instance =
-          Array.prototype.indexOf.call e.parentElement.children,
-                                       e
+        conf.instance = $(e).children()[0].src.replace(/[\s\S]*\/_loaded\/([\s\S]*)/, "$1")
         $(e).addClass 'active'
 
     #Collate All Tile Image Src's
-    window.tlis = []
+    window.tlis = {}
     $.each $('.tile-img'), (i, e)->
       i = new Image
       i.src = e.src
-      tlis.push i
+      tlis[i.src.replace(/[\s\S]*\/_loaded\/([\s\S]*)/, "$1")] = i
 
     #Collate All Tile Entity Src's
-    window.inis = []
+    window.inis = {}
     $.each $('.instance-img'), (i, e)->
       i = new Image
       i.src = e.src
-      inis.push i
+      inis[i.src.replace(/[\s\S]*\/_loaded\/([\s\S]*)/, "$1")] = i
   updateTilesAndInstances()
 
 
@@ -120,7 +127,14 @@ $(document).ready ->
         n.prop('id', '')
         n[0].innerHTML = "Layer #{$('.layers').children().length-2}"
 
-        n.insertBefore me.target
+        if (me.ctrlKey)
+          n.insertAfter $('.layer.template')
+          tls.unshift(undefined)
+          vis.unshift(undefined)
+          lnm.unshift(undefined)
+          changeLayer(conf.layer) #Updates Layers
+        else
+          n.insertBefore me.target
         r.appendTo n
 
 
@@ -164,7 +178,14 @@ $(document).on 'mousewheel', (e)->
       draw()
 
 $(document).on 'keydown', (e)->
-  if $(e.target).attr('name') isnt 'vex'
+  if e.key is 'Control'
+    $('.add')[0].childNodes[0].nodeValue = "add_box*"
+$(document).keyup (e)->
+  if e.key is 'Control'
+    $('.add')[0].childNodes[0].nodeValue = "add_box"
+
+$(document).on 'keydown', (e)->
+  unless $('body').hasClass('vex-open')
     if not e.ctrlKey
       switch e.key
         when 'Alt'
@@ -216,6 +237,26 @@ $(document).on 'keydown', (e)->
           else
             l.removeClass 'hidden'
           draw()
+        when 'o'
+          for tile in conf.selection.tiles
+            tile.rotation -= .001
+            draw()
+            didCommand()
+        when 'p'
+          for tile in conf.selection.tiles
+            tile.rotation += .001
+            draw()
+            didCommand()
+        when 'k'
+          for tile in conf.selection.tiles
+            tile.scale -= .05
+            draw()
+            didCommand()
+        when 'l'
+          for tile in conf.selection.tiles
+            tile.scale += .05
+            draw()
+            didCommand()
         when 'Delete'
           for tile in conf.selection.tiles
             tls[conf.layer].splice tls[conf.layer].indexOf(tile), 1
@@ -223,8 +264,83 @@ $(document).on 'keydown', (e)->
           e.preventDefault()
           draw()
           didCommand()
+        when 'Tab'
+          if conf.selection.tiles.length is 1
+            s = conf.selection.tiles[0]
+            str = ""
+            for k in Object.keys(s.data)
+              v = s.data[k]
+              str +=
+              """
+                <div class="fwrapper">
+                  <input name='key' placeholder="key" value='""" + k + """'/> -&gt; <input name='value' placeholder="value" value='""" + v + """'/>
+                </div>
+              """
+            vex.dialog.open {
+              message: "Edit Entity Data"
+              input:
+                """
+                  <style>
+                    .fwrapper {
+                      margin: 1em 0;
+                    }
+
+                    .fwrapper input {
+                      padding: 7px;
+                      border-radius: 4px;
+                      border: 2px solid #BBB;
+                    }
+
+                    .ftemplate {
+                      display: none;
+                    }
+                  </style>
+                  <div class="fwrapper ftemplate">
+                    <input name='key' placeholder="key"/> -&gt; <input name='value' placeholder="value"/>
+                  </div>
+                  <div class="fwrapper">
+                    <input name='key' placeholder="key"/> -&gt; <input name='value' placeholder="value"/>
+                  </div>""" + str +
+                  """
+                  <a class="material-icons" onclick="
+                    let a = $($('.ftemplate')[0]).clone()
+                    a.removeClass('ftemplate')
+                    a.insertAfter($('.vex-dialog-message'))
+                  ">
+                    add_box
+                  </div>
+                """
+              callback: (value)->
+                if not value then return
+                if typeof value.key is 'string'
+                  value.key = [value.key]
+                  value.value = [value.value]
+                for i in [0...value.key.length]
+                  if value.key[i]
+                    s.data[value.key[i]] = value.value[i]
+            }
     else
       switch e.key
+        when 'o'
+          for tile in conf.selection.tiles
+            tile.rotation -= .005
+            draw()
+            didCommand()
+        when 'p'
+          for tile in conf.selection.tiles
+            tile.rotation += .005
+            draw()
+            didCommand()
+        when 'k'
+          for tile in conf.selection.tiles
+            tile.scale -= .2
+            draw()
+            didCommand()
+        when 'l'
+          for tile in conf.selection.tiles
+            tile.scale += .2
+            draw()
+            didCommand()
         when 'a'
           conf.selection.tiles = []
           for tile in tls[conf.layer]
@@ -255,6 +371,10 @@ $(document).on 'keydown', (e)->
           undoCommand()
         when 'x'
           redoCommand()
+
+        when 's'
+          saveLevel(conf.lastIO)
+          console.log 'Saved ' + conf.lastIO
 
         when 'ArrowLeft'
           if conf.switcher is 'Instances'
@@ -322,7 +442,7 @@ $(document).on 'mouseup', (e)->
         didCommand()
     if conf.selection.selecting
       conf.selection.selecting = false
-      conf.selection.tiles = []
+      unless e.shiftKey then conf.selection.tiles = []
       [x1, y1, x2, y2] = conf.selection.getCoords()
 
       if e.ctrlKey

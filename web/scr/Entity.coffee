@@ -1,5 +1,7 @@
 class window.Entity
-    constructor: (@type, @id, @x, @y) ->
+    constructor: (@type, @id, @x, @y, @data = {}, @rotation = 0, @scale = 1) ->
+      @rotation = 0
+      @scale = 1
     getDrawCoords: ->
       if @type is 'Tile'
         return [

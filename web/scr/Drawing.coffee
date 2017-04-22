@@ -41,7 +41,7 @@ window.drawSelection = ->
       ctxs.beginPath()
       ctxs.rect x1, y1, x2-x1, y2-y1
       ctxs.stroke()
-    else
+    if conf.selection.tiles.length > 0
       ctxs.lineWidth = 3
       for t in conf.selection.tiles
         [x1, y1, sx, sy] = t.getDrawCoords()
@@ -67,11 +67,30 @@ window.drawTiles = ->
         layer = tls[i]
         for tile in layer
           [x, y] = tile.getDrawCoords()
+          r = 0
+          s = 1
           img = if tile.type is 'Tile' then tlis[tile.id] else inis[tile.id]
-          ctx.drawImage img,
-                        x, y
-                        img.width*conf.gridScaleUp,
-                        img.height*conf.gridScaleUp
+          if tile.type is 'Instance'
+            r = tile.rotation
+            s = tile.scale
+          ctx.save()
+          ctx.translate(x+(img.width/2), y+(img.height/2))
+          ctx.rotate(r*(180/Math.PI))
+          ctx.translate(-(x+(img.width/2)), -(y+(img.height/2)))
+          if img
+            ctx.drawImage img,
+                          x, y
+                          img.width*conf.gridScaleUp*s,
+                          img.height*conf.gridScaleUp*s
+          else
+            ctx.fillStyle = "red"
+            ctx.fillRect(
+              x, y
+              conf.tileSize*conf.gridScaleUp*s,
+              conf.tileSize*conf.gridScaleUp*s
+            )
+            ctx.fillStyle = "white"
+          ctx.restore()
 
 window.clearCanvas = (c, n)->
   c.save()

@@ -7,6 +7,7 @@ module.exports =
   history: [[[]]]
   historymax: 20
   rhistory: []
+  folderize: true
   mouse:
     down: [false, false, false, false]
     x: 0
@@ -32,9 +33,10 @@ module.exports =
   oldtool: 'None'
   layer: 0
   switcher: 'Tiles'
-  tile: -1
-  instance: -1
+  tile: undefined
+  instance: undefined
   grid: true
+  lvlCol: undefined
   colours:
     grid: '#2f3f58'
     selection: '#1f293a'
