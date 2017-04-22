@@ -239,24 +239,28 @@ $(document).on 'keydown', (e)->
           draw()
         when 'o'
           for tile in conf.selection.tiles
-            tile.rotation -= .001
-            draw()
-            didCommand()
+            if tile.type is 'Instance'
+              tile.rotation -= .001
+              draw()
+              didCommand()
         when 'p'
           for tile in conf.selection.tiles
-            tile.rotation += .001
-            draw()
-            didCommand()
+            if tile.type is 'Instance'
+              tile.rotation += .001
+              draw()
+              didCommand()
         when 'k'
           for tile in conf.selection.tiles
-            tile.scale -= .05
-            draw()
-            didCommand()
+            if tile.type is 'Instance'
+              tile.scale -= .05
+              draw()
+              didCommand()
         when 'l'
           for tile in conf.selection.tiles
-            tile.scale += .05
-            draw()
-            didCommand()
+            if tile.type is 'Instance'
+              tile.scale += .05
+              draw()
+              didCommand()
         when 'Delete'
           for tile in conf.selection.tiles
             tls[conf.layer].splice tls[conf.layer].indexOf(tile), 1
@@ -323,24 +327,28 @@ $(document).on 'keydown', (e)->
       switch e.key
         when 'o'
           for tile in conf.selection.tiles
-            tile.rotation -= .005
-            draw()
-            didCommand()
+            if tile.type is 'Instance'
+              tile.rotation -= .005
+              draw()
+              didCommand()
         when 'p'
           for tile in conf.selection.tiles
-            tile.rotation += .005
-            draw()
-            didCommand()
+            if tile.type is 'Instance'
+              tile.rotation += .005
+              draw()
+              didCommand()
         when 'k'
           for tile in conf.selection.tiles
-            tile.scale -= .2
-            draw()
-            didCommand()
+            if tile.type is 'Instance'
+              tile.scale -= .2
+              draw()
+              didCommand()
         when 'l'
           for tile in conf.selection.tiles
-            tile.scale += .2
-            draw()
-            didCommand()
+            if tile.type is 'Instance'
+              tile.scale += .2
+              draw()
+              didCommand()
         when 'a'
           conf.selection.tiles = []
           for tile in tls[conf.layer]
