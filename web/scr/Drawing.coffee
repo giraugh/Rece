@@ -73,10 +73,10 @@ window.drawTiles = ->
           if tile.type is 'Instance'
             r = tile.rotation
             s = tile.scale
-          ctx.save()
-          ctx.translate(x+(img.width/2), y+(img.height/2))
-          ctx.rotate(r*(180/Math.PI))
-          ctx.translate(-(x+(img.width/2)), -(y+(img.height/2)))
+            ctx.save()
+            ctx.translate(x+(img.width/2), y+(img.height/2))
+            ctx.rotate(r*(180/Math.PI))
+            ctx.translate(-(x+(img.width/2)), -(y+(img.height/2)))
           if img
             ctx.drawImage img,
                           x, y
@@ -90,7 +90,7 @@ window.drawTiles = ->
               conf.tileSize*conf.gridScaleUp*s
             )
             ctx.fillStyle = "white"
-          ctx.restore()
+          if tile.type is 'Instance' then ctx.restore()
 
 window.clearCanvas = (c, n)->
   c.save()
