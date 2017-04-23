@@ -3,3 +3,69 @@ gridScaleUp: 2
 imageSize: 16
 levelWidth: 20
 levelHeight: 20
+ignore: [
+  "tiles/ground/"
+  "tiles/bg/"
+]
+autos:
+  bg:
+    thumb: "bg/tile-9.png"
+    none:
+      all: ["bg/tile-24.png", 3]
+      r: ["bg/tile-25.png", 2]
+      l: ["bg/tile-23.png", 2]
+      t: ["bg/tile-9.png", 2]
+      b: ["bg/tile-39.png", 2]
+      tr: ["bg/tile-10.png", 3]
+      tl: ["bg/tile-8.png", 3]
+      bl: ["bg/tile-38.png", 3]
+      br: ["bg/tile-40.png", 3]
+    bg:
+      all: ["bg/tile-24.png", 3]
+      tre: ["bg/tile-41.png", 1]
+      tle: ["bg/tile-42.png", 1]
+      bre: ["bg/tile-26.png", 1]
+      ble: ["bg/tile-27.png", 1]
+  ground:
+    thumb: "ground/tile-1.png"
+    none:
+      all: ["ground/tile-1.png", 3]
+      r: ["ground/tile-17.png", 2]
+      l: ["ground/tile-15.png", 2]
+      t: ["ground/tile-1.png", 2]
+      b: ["ground/tile-31.png", 2]
+      tr: ["ground/tile-2.png", 3]
+      tl: ["ground/tile-0.png", 3]
+      bl: ["ground/tile-30.png", 3]
+      br: ["ground/tile-32.png", 3]
+    "ground|grass":
+      all: ["ground/tile-21.png", 3]
+      tre: ["ground/tile-33.png", 1]
+      tle: ["ground/tile-34.png", 1]
+      bre: ["ground/tile-18.png", 1]
+      ble: ["ground/tile-19.png", 1]
+    "ground/tile-1.png?grass":
+      r: ["ground/grass/tile-3.png", 4]
+      l: ["ground/grass/tile-4.png", 4]
+    "ground/tile-2.png?grass":
+      l: ["ground/grass/tile-12.png", 4]
+    "ground/tile-0.png?grass":
+      r: ["ground/grass/tile-11.png", 4]
+  grass:
+    thumb: "ground/grass/tile-6.png"
+    none:
+      all: ["ground/grass/tile-6.png", 3]
+      r: ["ground/grass/tile-22.png", 2]
+      l: ["ground/grass/tile-20.png", 2]
+      t: ["ground/grass/tile-6.png", 2]
+      b: ["ground/grass/tile-36.png", 2]
+      tr: ["ground/grass/tile-7.png", 3]
+      tl: ["ground/grass/tile-5.png", 3]
+      bl: ["ground/grass/tile-35.png", 3]
+      br: ["ground/grass/tile-37.png", 3]
+    "ground|grass":
+      all: ["ground/tile-21.png", 3]
+      tre: ["ground/tile-33.png", 1]
+      tle: ["ground/tile-34.png", 1]
+      bre: ["ground/tile-18.png", 1]
+      ble: ["ground/tile-19.png", 1]

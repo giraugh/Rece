@@ -55,7 +55,10 @@ $(document).ready ->
       $(e).on 'click', (me)->
         $.each $('.tile'), (i, e)->
           $(e).removeClass 'active'
-        conf.tile = $(e).children()[0].src.replace(/[\s\S]*\/_loaded\/([\s\S]*)/, "$1")
+        if $(e).hasClass 'auto'
+          conf.tile = "%#{$(e).attr('title')}"
+        else
+          conf.tile = $(e).children()[0].src.replace(/[\s\S]*\/_loaded\/([\s\S]*)/, "$1")
         $(e).addClass 'active'
 
     #Instance Selection
@@ -72,6 +75,20 @@ $(document).ready ->
       i = new Image
       i.src = e.src
       tlis[i.src.replace(/[\s\S]*\/_loaded\/([\s\S]*)/, "$1")] = i
+
+    #Collate all Auto Tile Image Src's
+    for sysname, sys of conf.autos
+      i = new Image
+      for key, rule of sys
+        if key isnt 'thumb'
+          for k, nrule of rule
+            i = new Image
+            i.src = "../_loaded/tiles/#{nrule[0]}"
+            tlis[i.src.replace(/[\s\S]*\/_loaded\/([\s\S]*)/, "$1")] = i
+        else
+          i = new Image
+          i.src = "../_loaded/tiles/#{rule}"
+          tlis["%#{sysname}"] = i
 
     #Collate All Tile Entity Src's
     window.inis = {}
@@ -199,15 +216,19 @@ $(document).on 'keydown', (e)->
         when 'ArrowLeft'
           shiftSelected(-1, 0)
           didCommand()
+          updateAllAutos() ##HACK
         when 'ArrowRight'
           shiftSelected(1, 0)
           didCommand()
+          updateAllAutos() ##HACK
         when 'ArrowUp'
           shiftSelected(0, -1)
           didCommand()
+          updateAllAutos() ##HACK
         when 'ArrowDown'
           shiftSelected(0, 1)
           didCommand()
+          updateAllAutos() ##HACK
 
         when 'd'
           conf.tool = 'Place'
@@ -264,6 +285,7 @@ $(document).on 'keydown', (e)->
             tls[conf.layer].splice tls[conf.layer].indexOf(tile), 1
           conf.selection.tiles = []
           e.preventDefault()
+          updateAllAutos()
           draw()
           didCommand()
         when 'Tab'
@@ -350,7 +372,8 @@ $(document).on 'keydown', (e)->
         when 'a'
           conf.selection.tiles = []
           for tile in tls[conf.layer]
-            conf.selection.tiles.push tile
+            if (conf.switcher is 'Tiles' and tile.type is 'Tile') or (conf.switcher is 'Instances' and tile.type is 'Instance')
+              conf.selection.tiles.push tile
           e.preventDefault()
           draw()
         when 'i'
@@ -462,12 +485,16 @@ $(document).on 'mouseup', (e)->
             xx = x1 + i
             yy = y1 + j
             if conf.switcher is 'Tiles'
-              tls[conf.layer].push new Entity 'Tile',
-                                              conf.tile,
-                                              xx,
-                                              yy
+              if conf.tile and noTileAt xx, yy
+                if '%' is conf.tile.charAt 0
+                  e = new Entity 'Tile', conf.tile, xx, yy
+                  e.auto = conf.tile.slice(1)
+                  tls[conf.layer].push e
+                else
+                  tls[conf.layer].push new Entity 'Tile', conf.tile, xx, yy
             if conf.switcher is 'Instances'
               tls[conf.layer].push new Entity 'Instance', conf.tile, x1 + (i * conf.tileSize), y1 + (j * conf.tileSize)
+        updateAutos(x1, y1, x2, y2)
       else
         for t in tls[conf.layer]
             if t.x >= x1 and t.y >= y1 and t.x < x2 and t.y < y2

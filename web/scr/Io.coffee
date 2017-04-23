@@ -150,6 +150,20 @@ window.updateProject = ->
     ]
   }
 
+  #Read Config
+  if fs.existsSync path.join loaded(), 'project.cson'
+    lconf = cson.load path.join loaded(), 'project.cson'
+    conf.tileSize = lconf.tileSize or conf.tileSize
+    conf.gridScaleUp = lconf.gridScaleUp or conf.gridScaleUp
+    conf.imageSize = lconf.imageSize or conf.imageSize
+    conf.levelWidth = lconf.levelWidth or conf.levelWidth
+    conf.levelHeight = lconf.levelHeight or conf.levelHeight
+    if lconf.bgColour
+      $("#editor").css('background-color', lconf.bgColour)
+      conf.projCol = lconf.bgColour
+    else
+      $("#editor").css('background-color', "#445c82")
+
   #Remove pre-existing tiles
   if $('.folder').length > 0 then $.each $('.folder'), (i, e)->$(e).remove()
   if $('.tile').length > 0 then $.each $('.tile'), (i, e)->$(e).remove()
@@ -159,6 +173,14 @@ window.updateProject = ->
   folders = []
   folderEls = {}
   tiles.forEach (t, i)->
+    #Ignore this one?
+    if lconf?.ignore
+      for ign in lconf.ignore
+        nf = t.path.replace(/[\s\S]*[\/\\]_loaded[\/\\]/, "")
+        oign = ign.replace(/\//g, "\\")
+        if (-1 isnt nf.indexOf ign) or (-1 isnt nf.indexOf oign)
+          return
+
     #Set Selected Tile
     if i is 0
       conf.tile = 0
@@ -177,7 +199,7 @@ window.updateProject = ->
     #Add img to div
     d.appendTo e
 
-    if conf.folderize
+    if !(lconf?.folderize) or true
       #Create Folder?
       lpath = t.path.replace(/[\s\S]*[\/\\]_loaded[\/\\]tiles[\/\\]([\s\S]*)/, "$1")
       fpath = lpath.replace(/^([^\/\\]*)[\s\S]*$/, "$1")
@@ -223,7 +245,7 @@ window.updateProject = ->
     #Add img to div
     d.appendTo e
 
-    if conf.folderize
+    if !(lconf?.folderize) or true
       #Create Folder?
       lpath = t.path.replace(/[\s\S]*[\/\\]_loaded[\/\\]instances[\/\\]([\s\S]*)/, "$1")
       fpath = lpath.replace(/^([^\/\\]*)[\s\S]*$/, "$1")
@@ -258,22 +280,28 @@ window.updateProject = ->
     if i is 0
       conf.instance = 0
 
+  #Autotile Systems
+  if lconf?.autos
+    conf.autos = autos = lconf.autos
+    for sysname, sys of autos
+      #Create Image
+      d = $ '<img/>', {
+        class: "tile-img"
+        src: "../_loaded/tiles/#{sys.thumb}"
+      }
+
+      #Create Tile Div
+      e = $ '<div/>', {
+        class: "tile auto"
+        title: sysname
+      }
+
+      #Add img to div
+      d.appendTo e
+      e.appendTo $ '.tiles'
+
   #Reset tiles
   window.tls = [[]]
-
-  #Read Config
-  if fs.existsSync path.join loaded(), 'project.cson'
-    lconf = cson.load path.join loaded(), 'project.cson'
-    conf.tileSize = lconf.tileSize or conf.tileSize
-    conf.gridScaleUp = lconf.gridScaleUp or conf.gridScaleUp
-    conf.imageSize = lconf.imageSize or conf.imageSize
-    conf.levelWidth = lconf.levelWidth or conf.levelWidth
-    conf.levelHeight = lconf.levelHeight or conf.levelHeight
-    if lconf.bgColour
-      $("#editor").css('background-color', lconf.bgColour)
-      conf.projCol = lconf.bgColour
-    else
-      $("#editor").css('background-color', "#445c82")
 
   #Draw
   draw()

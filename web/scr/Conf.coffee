@@ -8,6 +8,7 @@ module.exports =
   historymax: 20
   rhistory: []
   folderize: true
+  autosystems: {}
   mouse:
     down: [false, false, false, false]
     x: 0
